@@ -1,19 +1,15 @@
 package mx.somethingsomething.services;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-
 public class PeriodicallyScheduledTweets extends Thread {
 
 	private String tweet;
-	private File tweetFile;
+	private List<String> tweets;
 	private File filesDir;
 
 	@Override
@@ -26,24 +22,14 @@ public class PeriodicallyScheduledTweets extends Thread {
 		this.filesDir = _filesDir;
 	}
 
-	public PeriodicallyScheduledTweets(File _tweetFile, File _filesDir) {
-		this.tweetFile = _tweetFile;
+	public PeriodicallyScheduledTweets(List<String> _tweets, File _filesDir) {
+		this.tweets = _tweets;
 		this.filesDir = _filesDir;
 	}
 
 	public void proccessAllTweets() {
-		if (tweetFile != null && tweetFile.isFile()) {
-			List<String> readLines;
-			try {
-				readLines = FileUtils.readLines(tweetFile, Charset.defaultCharset());
-				String fileConfigContext = FileUtils.readFileToString(tweetFile, Charset.defaultCharset());
-				fileConfigContext = fileConfigContext.replaceAll(readLines.get(0) + System.lineSeparator(), "");
-				FileUtils.writeStringToFile(tweetFile, fileConfigContext, Charset.defaultCharset());
-				tweet = readLines.get(0);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (tweets != null && tweets.size() > 0) {
+			tweet = tweets.get(0);
 		}
 
 		if (filesDir.isDirectory()) {
@@ -68,6 +54,7 @@ public class PeriodicallyScheduledTweets extends Thread {
 				e.printStackTrace();
 			}
 		}
+		tweets.remove(0);
 	}
 
 }

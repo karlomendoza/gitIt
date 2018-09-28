@@ -11,28 +11,31 @@ import twitter4j.TwitterFactory;
 
 public class SendTweet {
 
-	private static Boolean testRun = false;
+	private static Boolean testRun = true;
 
 	public static void postToTwitter(String tweet) throws FileNotFoundException, IOException {
 		postToTwitter(tweet, null);
 	}
 
-	public static void postToTwitter(String tweet, File filePath) throws FileNotFoundException, IOException {
-		if (!testRun) {
-			try {
-				Twitter twitter = new TwitterFactory().getInstance();
+	public static void postToTwitter(String tweet, File file) throws FileNotFoundException, IOException {
+
+		try {
+			Twitter twitter = new TwitterFactory().getInstance();
 
 //				twitter.getRetweetsOfMe()
 
-				StatusUpdate status = new StatusUpdate(tweet);
-				if (filePath != null && filePath.isFile()) {
-					status.setMedia(filePath);
-				}
-				twitter.updateStatus(status);
-
-			} catch (TwitterException te) {
-				te.printStackTrace();
+			StatusUpdate status = new StatusUpdate(tweet);
+			if (file != null && file.isFile()) {
+				status.setMedia(file);
 			}
+			if (!testRun) {
+				twitter.updateStatus(status);
+			} else {
+				System.out.println("tweet: " + tweet + " file: " + file.getName());
+			}
+
+		} catch (TwitterException te) {
+			te.printStackTrace();
 		}
 	}
 }

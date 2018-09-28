@@ -1,14 +1,19 @@
 package mx.somethingsomething.scene;
 
 import java.io.File;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.commons.io.FileUtils;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -241,15 +246,20 @@ public class PeriodicallySchedulerTweetScene {
 			public void handle(final ActionEvent e) {
 				try {
 					PeriodicallyScheduledTweets periodicallySendTweet;
+					List<String> tweets = new ArrayList<String>();
+					if (useTweetList.isSelected()) {
+						tweets = FileUtils.readLines(tweetsFile, Charset.defaultCharset());
+					}
+
 					if (useSameImage.isSelected()) {
 						if (useTweetList.isSelected()) {
-							periodicallySendTweet = new PeriodicallyScheduledTweets(tweetsFile, imageFile);
+							periodicallySendTweet = new PeriodicallyScheduledTweets(tweets, imageFile);
 						} else {
 							periodicallySendTweet = new PeriodicallyScheduledTweets(tweet.getText(), imageFile);
 						}
 					} else {
 						if (useTweetList.isSelected()) {
-							periodicallySendTweet = new PeriodicallyScheduledTweets(tweetsFile, imagesDirectory);
+							periodicallySendTweet = new PeriodicallyScheduledTweets(tweets, imagesDirectory);
 						} else {
 							periodicallySendTweet = new PeriodicallyScheduledTweets(tweet.getText(), imagesDirectory);
 						}
